@@ -1,4 +1,4 @@
-module ventas-ceili-backend
+module github.com/vhPedroGitHub/ventas-ceili
 
 go 1.21
 
