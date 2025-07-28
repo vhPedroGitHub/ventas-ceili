@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:7
+    container_name: ventas-ceili-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ventas_ceili
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - ventas-network
+
+  # Backend API (Go)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ventas-ceili-backend
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - MONGO_URI=mongodb://mongo:27017
+      - GIN_MODE=release
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - ventas-network
+    volumes:
+      - ./backend/.env:/root/.env
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ventas-ceili-frontend
+    restart: unless-stopped
+    environment:
+      - REACT_APP_API_URL=http://localhost/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - ventas-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: ventas-ceili-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - ventas-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  ventas-network:
+    driver: bridge
