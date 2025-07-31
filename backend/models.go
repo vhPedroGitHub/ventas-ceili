@@ -27,13 +27,6 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-// RegisterRequest para el registro
-type RegisterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
-	Nombre   string `json:"nombre" binding:"required,min=2"`
-}
-
 // FacebookAuthRequest para autenticación con Facebook
 type FacebookAuthRequest struct {
 	AccessToken string `json:"access_token" binding:"required"`
@@ -97,11 +90,6 @@ type RegisterRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6"`
 	Nombre   string `json:"nombre" binding:"required"`
-}
-
-type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
 }
 
 // Producto representa un producto individual
