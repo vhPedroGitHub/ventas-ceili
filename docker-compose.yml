@@ -27,7 +27,7 @@ services:
       - PORT=8080
       - MONGO_URI=mongodb://mongo:27017
       - GIN_MODE=release
-
+      - JWT_SECRET=K8v!s9@2Lz#Qw4^pXr6$zT1*eB7mN0cF
     ports:
       - "8080:8080"
     depends_on:
