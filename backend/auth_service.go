@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -12,7 +13,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("tu_jwt_secret_muy_seguro_cambia_esto_en_produccion")
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
+
+func init() {
+	if len(jwtSecret) == 0 {
+		jwtSecret = []byte("valor_por_defecto_seguro")
+	}
+}
 
 // AuthService maneja la autenticación
 type AuthService struct {
